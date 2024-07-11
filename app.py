@@ -72,7 +72,13 @@ def index():
 def view_highlights(doc_id):
     document = Document.query.get_or_404(doc_id)
     highlights = Highlight.query.filter_by(doc_id=doc_id).all()
-    return render_template('highlights.html', document=document, highlights=highlights)
+    
+    # Construct the highlighted_data dictionary
+    highlighted_data = {}
+    for highlight in highlights:
+        highlighted_data.setdefault(highlight.color, []).append(highlight.text)
+    
+    return render_template('highlights.html', document=document, highlighted_data=highlighted_data)
 
 @app.route('/download/<int:doc_id>')
 def download_file(doc_id):
